@@ -177,13 +177,18 @@
             margin-bottom: 25px;
         }
 
+        .tier-progress-wrapper {
+            position: relative;
+            padding: 0 15px;
+        }
+
         .tier-progress-bar {
-            height: 12px;
+            height: 8px;
             background: #E8DCC8;
             border-radius: 10px;
             position: relative;
             overflow: hidden;
-            margin-bottom: 10px;
+            margin-bottom: 0;
         }
 
         .tier-progress-fill {
@@ -194,10 +199,10 @@
         }
 
         .tier-markers {
-            display: flex;
-            justify-content: space-between;
+            display: block;
             position: relative;
-            margin-top: -5px;
+            margin-top: -14px;
+            height: 55px;
         }
 
         .tier-marker {
@@ -206,11 +211,19 @@
             align-items: center;
             font-size: 11px;
             color: var(--color-brown-light);
+            position: absolute;
+            transform: translateX(-50%);
         }
 
+        .tier-marker[data-tier="4"] { left: 20%; }
+        .tier-marker[data-tier="6"] { left: 40%; }
+        .tier-marker[data-tier="8"] { left: 60%; }
+        .tier-marker[data-tier="10"] { left: 80%; }
+        .tier-marker[data-tier="20"] { left: 100%; transform: translateX(-80%); }
+
         .tier-marker-dot {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             background: #E8DCC8;
             border-radius: 50%;
             margin-bottom: 5px;
@@ -219,24 +232,50 @@
             justify-content: center;
             font-size: 10px;
             font-weight: 700;
-            color: white;
+            color: #999;
             transition: all 0.3s;
+            border: 3px solid var(--color-cream);
         }
 
         .tier-marker.unlocked .tier-marker-dot {
             background: var(--color-green);
+            color: white;
         }
 
         .tier-marker.current .tier-marker-dot {
             background: var(--color-orange);
-            transform: scale(1.2);
+            color: white;
+            transform: scale(1.15);
+            box-shadow: 0 2px 8px rgba(232, 165, 75, 0.4);
+        }
+
+        .tier-marker-info {
+            text-align: center;
+        }
+
+        .tier-marker-price {
+            font-weight: 600;
+            color: var(--color-brown);
         }
 
         .tier-discount {
             font-weight: 700;
             color: var(--color-green);
+            font-size: 10px;
         }
 
+        /* Cookie counter above progress */
+        .cookie-counter-display {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 15px;
+            color: var(--color-brown);
+        }
+
+        .cookie-counter-display strong {
+            font-size: 24px;
+            color: var(--color-orange);
+        }
         /* Current Tier Banner */
         .current-tier-banner {
             background: linear-gradient(135deg, var(--color-green-light) 0%, #C8E6C9 100%);
@@ -831,7 +870,7 @@
     <!-- Header -->
     <header class="header">
         <div class="header-left">
-            <img src="images/logo.png" alt="Ohlala Cookies" class="header-logo">
+            <img src="logo.png" alt="Ohlala Cookies" class="header-logo">
             <span class="header-title">Ma Commande</span>
         </div>
         <a href="index.html" class="header-back">← Retour</a>
@@ -856,29 +895,49 @@
                 
                 <!-- Tier Progress -->
                 <div class="tier-container">
-                    <div class="tier-progress-bar">
-                        <div class="tier-progress-fill" id="tier-fill" style="width: 0%"></div>
+                    <div class="cookie-counter-display">
+                        <strong id="cookie-count-display">0</strong> cookie(s) sélectionné(s)
                     </div>
-                    <div class="tier-markers">
-                        <div class="tier-marker" data-tier="4">
-                            <div class="tier-marker-dot">4</div>
-                            <span>12€</span>
-                            <span class="tier-discount">-14%</span>
+                    <div class="tier-progress-wrapper">
+                        <div class="tier-progress-bar">
+                            <div class="tier-progress-fill" id="tier-fill" style="width: 0%"></div>
                         </div>
-                        <div class="tier-marker" data-tier="6">
-                            <div class="tier-marker-dot">6</div>
-                            <span>18€</span>
-                            <span class="tier-discount">-14%</span>
-                        </div>
-                        <div class="tier-marker" data-tier="8">
-                            <div class="tier-marker-dot">8</div>
-                            <span>23€</span>
-                            <span class="tier-discount">-18%</span>
-                        </div>
-                        <div class="tier-marker" data-tier="10">
-                            <div class="tier-marker-dot">10</div>
-                            <span>28€</span>
-                            <span class="tier-discount">-20%</span>
+                        <div class="tier-markers">
+                            <div class="tier-marker" data-tier="4">
+                                <div class="tier-marker-dot">4</div>
+                                <div class="tier-marker-info">
+                                    <span class="tier-marker-price">12€</span>
+                                    <span class="tier-discount">-14%</span>
+                                </div>
+                            </div>
+                            <div class="tier-marker" data-tier="6">
+                                <div class="tier-marker-dot">6</div>
+                                <div class="tier-marker-info">
+                                    <span class="tier-marker-price">18€</span>
+                                    <span class="tier-discount">-14%</span>
+                                </div>
+                            </div>
+                            <div class="tier-marker" data-tier="8">
+                                <div class="tier-marker-dot">8</div>
+                                <div class="tier-marker-info">
+                                    <span class="tier-marker-price">23€</span>
+                                    <span class="tier-discount">-18%</span>
+                                </div>
+                            </div>
+                            <div class="tier-marker" data-tier="10">
+                                <div class="tier-marker-dot">10</div>
+                                <div class="tier-marker-info">
+                                    <span class="tier-marker-price">28€</span>
+                                    <span class="tier-discount">-20%</span>
+                                </div>
+                            </div>
+                            <div class="tier-marker" data-tier="20">
+                                <div class="tier-marker-dot">20</div>
+                                <div class="tier-marker-info">
+                                    <span class="tier-marker-price">🚚</span>
+                                    <span class="tier-discount">Gratuit</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1106,15 +1165,15 @@
 
         // Cookies data
         const cookies = [
-            { id: 'chocolat-noir', name: 'Chocolat Noir', price: 3, image: 'images/chocolat-noir.png', badge: 'bestseller' },
-            { id: 'chocolat-lait', name: 'Chocolat au Lait', price: 3, image: 'images/chocolat-lait.png', badge: 'bestseller' },
-            { id: 'pistache', name: 'Chocolat Blanc & Pistache', price: 3.5, image: 'images/pistache.png' },
-            { id: 'cacahuete', name: 'Beurre de Cacahuète', price: 3.5, image: 'images/cacahuete.png' },
-            { id: 'speculoos', name: 'Chocolat Noir & Speculoos', price: 3.5, image: 'images/speculoos.png' },
-            { id: 'nocciolata', name: 'Chocolat Noir & Nocciolata', price: 3.5, image: 'images/nocciolata.png' },
-            { id: 'chocolat-blanc', name: 'Chocolat Blanc & Macadamia', price: 3.5, image: 'images/chocolat-blanc.png' },
-            { id: 'dulcey', name: 'Chocolat Dulcey & Pécan', price: 3.5, image: 'images/dulcey.png' },
-            { id: 'miso', name: 'Caramélia & Pâte au Miso', price: 3.5, image: 'images/miso.png', badge: 'new' }
+            { id: 'chocolat-noir', name: 'Chocolat Noir', price: 3, image: 'chocolat-noir.png', badge: 'bestseller' },
+            { id: 'chocolat-lait', name: 'Chocolat au Lait', price: 3, image: 'chocolat-lait.png', badge: 'bestseller' },
+            { id: 'pistache', name: 'Chocolat Blanc & Pistache', price: 3.5, image: 'pistache.png' },
+            { id: 'cacahuete', name: 'Beurre de Cacahuète', price: 3.5, image: 'cacahuete.png' },
+            { id: 'speculoos', name: 'Chocolat Noir & Speculoos', price: 3.5, image: 'speculoos.png' },
+            { id: 'nocciolata', name: 'Chocolat Noir & Nocciolata', price: 3.5, image: 'nocciolata.png' },
+            { id: 'chocolat-blanc', name: 'Chocolat Blanc & Macadamia', price: 3.5, image: 'chocolat-blanc.png' },
+            { id: 'dulcey', name: 'Chocolat Dulcey & Pécan', price: 3.5, image: 'dulcey.png' },
+            { id: 'miso', name: 'Caramélia & Pâte au Miso', price: 3.5, image: 'miso.png', badge: 'new' }
         ];
 
         // State
@@ -1223,6 +1282,9 @@
             document.getElementById('summary-count').textContent = `${totalCookies} cookie${totalCookies > 1 ? 's' : ''}`;
             document.getElementById('summary-price').textContent = `${tierPrice.toFixed(2).replace('.', ',')}€`;
             
+            // Update cookie counter display
+            document.getElementById('cookie-count-display').textContent = totalCookies;
+            
             const savingsBadge = document.getElementById('summary-savings-badge');
             if (savings > 0) {
                 savingsBadge.textContent = `Vous économisez ${savings.toFixed(2).replace('.', ',')}€`;
@@ -1230,9 +1292,29 @@
                 savingsBadge.textContent = '';
             }
 
-            // Update tier progress
-            const maxTier = 10;
-            const progress = Math.min((totalCookies / maxTier) * 100, 100);
+            // Update tier progress - proportional to markers
+            // Markers are at 4, 6, 8, 10, 20 which represent 20%, 40%, 60%, 80%, 100% of the bar
+            let progress = 0;
+            if (totalCookies <= 0) {
+                progress = 0;
+            } else if (totalCookies <= 4) {
+                // 0-4 cookies maps to 0-20%
+                progress = (totalCookies / 4) * 20;
+            } else if (totalCookies <= 6) {
+                // 4-6 cookies maps to 20-40%
+                progress = 20 + ((totalCookies - 4) / 2) * 20;
+            } else if (totalCookies <= 8) {
+                // 6-8 cookies maps to 40-60%
+                progress = 40 + ((totalCookies - 6) / 2) * 20;
+            } else if (totalCookies <= 10) {
+                // 8-10 cookies maps to 60-80%
+                progress = 60 + ((totalCookies - 8) / 2) * 20;
+            } else if (totalCookies <= 20) {
+                // 10-20 cookies maps to 80-100%
+                progress = 80 + ((totalCookies - 10) / 10) * 20;
+            } else {
+                progress = 100;
+            }
             document.getElementById('tier-fill').style.width = `${progress}%`;
 
             // Update tier markers
