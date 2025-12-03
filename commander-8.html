@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commander - Ohlala Cookies</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-cream: #FFF9E6;
+            --color-cream-dark: #FFF3D1;
+            --color-yellow: #F5D547;
+            --color-yellow-dark: #E8C83D;
+            --color-orange: #E8A54B;
+            --color-brown: #5D4E37;
+            --color-brown-light: #8B7355;
+            --color-white: #FFFFFF;
+            --color-green: #4CAF50;
+            --color-green-light: #E8F5E9;
+            --color-red: #E74C3C;
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Quicksand', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-cream);
+            color: var(--color-brown);
+            min-height: 100vh;
+            padding-bottom: 100px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--color-white);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 20px rgba(93, 78, 55, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+        }
+
+        .header-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+        }
+
+        .header-back {
+            color: var(--color-brown-light);
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: var(--color-white);
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .progress-step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .progress-step.active {
+            background: var(--color-yellow);
+            color: var(--color-brown);
+            box-shadow: 0 4px 15px rgba(245, 213, 71, 0.4);
+        }
+
+        .progress-step.completed {
+            background: var(--color-green);
+            color: white;
+        }
+
+        .progress-step.inactive {
+            background: #E8DCC8;
+            color: #A99B8A;
+        }
+
+        .progress-line {
+            width: 50px;
+            height: 3px;
+            background: #E8DCC8;
+            border-radius: 2px;
+        }
+
+        .progress-line.completed {
+            background: var(--color-green);
+        }
+
+        /* Container */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Steps */
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Card */
+        .card {
+            background: var(--color-white);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(93, 78, 55, 0.08);
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Tier Progress */
+        .tier-container {
+            margin-bottom: 25px;
+        }
+
+        .tier-progress-wrapper {
+            position: relative;
+            padding: 0 15px;
+        }
+
+        .tier-progress-bar {
+            height: 8px;
+            background: #E8DCC8;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 0;
+        }
+
+        .tier-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-yellow) 0%, var(--color-orange) 100%);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        .tier-markers {
+            display: block;
+            position: relative;
+            margin-top: -14px;
+            height: 55px;
+        }
+
+        .tier-marker {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 11px;
+            color: var(--color-brown-light);
+            position: absolute;
+            transform: translateX(-50%);
+        }
+
+        .tier-marker[data-tier="4"] { left: 20%; }
+        .tier-marker[data-tier="6"] { left: 40%; }
+        .tier-marker[data-tier="8"] { left: 60%; }
+        .tier-marker[data-tier="10"] { left: 80%; }
+        .tier-marker[data-tier="20"] { left: 100%; transform: translateX(-80%); }
+
+        .tier-marker-dot {
+            width: 22px;
+            height: 22px;
+            background: #E8DCC8;
+            border-radius: 50%;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: #999;
+            transition: all 0.3s;
+            border: 3px solid var(--color-cream);
+        }
+
+        .tier-marker.unlocked .tier-marker-dot {
+            background: var(--color-green);
+            color: white;
+        }
+
+        .tier-marker.current .tier-marker-dot {
+            background: var(--color-orange);
+            color: white;
+            transform: scale(1.15);
+            box-shadow: 0 2px 8px rgba(232, 165, 75, 0.4);
+        }
+
+        .tier-marker-info {
+            text-align: center;
+        }
+
+        .tier-marker-price {
+            font-weight: 600;
+            color: var(--color-brown);
+        }
+
+        .tier-discount {
+            font-weight: 700;
+            color: var(--color-green);
+            font-size: 10px;
+        }
+
+        /* Cookie counter above progress */
+        .cookie-counter-display {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 15px;
+            color: var(--color-brown);
+        }
+
+        .cookie-counter-display strong {
+            font-size: 24px;
+            color: var(--color-orange);
+        }
+        /* Current Tier Banner */
+        .current-tier-banner {
+            background: linear-gradient(135deg, var(--color-green-light) 0%, #C8E6C9 100%);
+            border: 2px solid var(--color-green);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .current-tier-banner h4 {
+            color: var(--color-green);
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .current-tier-banner p {
+            font-size: 13px;
+            color: #2E7D32;
+        }
+
+        /* Next Tier Nudge */
+        .next-tier-nudge {
+            background: var(--color-cream);
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        .next-tier-nudge.hidden {
+            display: none;
+        }
+
+        .next-tier-nudge-text {
+            color: var(--color-brown);
+        }
+
+        .next-tier-nudge-text strong {
+            color: var(--color-orange);
+        }
+
+        /* Cookie Grid */
+        .cookie-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .cookie-item {
+            background: var(--color-cream);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .cookie-item.has-quantity {
+            border-color: var(--color-yellow);
+            box-shadow: 0 4px 15px rgba(245, 213, 71, 0.3);
+        }
+
+        .cookie-item-image-wrapper {
+            position: relative;
+        }
+
+        .cookie-item-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .cookie-card-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: white;
+        }
+
+        .cookie-card-badge.bestseller {
+            background: var(--color-orange);
+        }
+
+        .cookie-card-badge.new {
+            background: var(--color-green);
+        }
+
+        .cookie-item-content {
+            padding: 12px;
+        }
+
+        .cookie-item-name {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+
+        .cookie-item-price {
+            font-size: 12px;
+            color: var(--color-orange);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .cookie-item-price .original {
+            text-decoration: line-through;
+            color: var(--color-brown-light);
+            font-weight: 400;
+            margin-right: 5px;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-btn.minus {
+            background: #E8DCC8;
+            color: var(--color-brown);
+        }
+
+        .qty-btn.plus {
+            background: var(--color-yellow);
+            color: var(--color-brown);
+        }
+
+        .qty-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .qty-value {
+            font-weight: 700;
+            font-size: 16px;
+            min-width: 25px;
+            text-align: center;
+        }
+
+        /* Order Summary Sticky */
+        .order-summary-sticky {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--color-white);
+            padding: 15px 20px;
+            box-shadow: 0 -4px 20px rgba(93, 78, 55, 0.15);
+            z-index: 100;
+        }
+
+        .order-summary-content {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .order-summary-info {
+            flex: 1;
+        }
+
+        .order-summary-count {
+            font-size: 14px;
+            color: var(--color-brown-light);
+        }
+
+        .order-summary-price {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--color-brown);
+        }
+
+        .order-summary-savings {
+            font-size: 12px;
+            color: var(--color-green);
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font-body);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--color-yellow);
+            color: var(--color-brown);
+            box-shadow: 0 4px 15px rgba(245, 213, 71, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-yellow-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--color-brown-light);
+            padding: 14px 20px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-cream);
+        }
+
+        .btn-full {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Step 2: Delivery Options */
+        .delivery-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .delivery-option {
+            border: 2px solid #E8DCC8;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .delivery-option:hover {
+            border-color: var(--color-yellow);
+        }
+
+        .delivery-option.selected {
+            border-color: var(--color-yellow);
+            background: var(--color-cream);
+        }
+
+        .delivery-option-radio {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #E8DCC8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .delivery-option.selected .delivery-option-radio {
+            border-color: var(--color-yellow);
+            background: var(--color-yellow);
+        }
+
+        .delivery-option.selected .delivery-option-radio::after {
+            content: '✓';
+            color: var(--color-brown);
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .delivery-option-content {
+            flex: 1;
+        }
+
+        .delivery-option-title {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .delivery-option-desc {
+            font-size: 13px;
+            color: var(--color-brown-light);
+            line-height: 1.4;
+        }
+
+        .delivery-option-price {
+            font-weight: 700;
+            color: var(--color-orange);
+            margin-left: auto;
+            white-space: nowrap;
+        }
+
+        .delivery-option-price.free {
+            color: var(--color-green);
+        }
+
+        /* Address Form */
+        .address-form {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .address-form.visible {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E8DCC8;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: var(--font-body);
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--color-yellow);
+            box-shadow: 0 0 0 3px rgba(245, 213, 71, 0.2);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+        }
+
+        /* Time Slots */
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .time-slot {
+            padding: 12px;
+            border: 2px solid #E8DCC8;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .time-slot:hover {
+            border-color: var(--color-yellow);
+        }
+
+        .time-slot.selected {
+            border-color: var(--color-yellow);
+            background: var(--color-yellow);
+        }
+
+        /* Step 3: Payment */
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .payment-option {
+            border: 2px solid #E8DCC8;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-option:hover {
+            border-color: var(--color-yellow);
+        }
+
+        .payment-option.selected {
+            border-color: var(--color-yellow);
+            background: var(--color-cream);
+        }
+
+        .payment-option-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .payment-option-icon {
+            font-size: 24px;
+        }
+
+        .payment-option-title {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .payment-option-desc {
+            font-size: 13px;
+            color: var(--color-brown-light);
+            padding-left: 36px;
+        }
+
+        /* Summary */
+        .summary-card {
+            background: var(--color-cream);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .summary-item.indent {
+            padding-left: 15px;
+            color: var(--color-brown-light);
+        }
+
+        .summary-divider {
+            height: 1px;
+            background: #E8DCC8;
+            margin: 15px 0;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* Confirmation Page */
+        .confirmation-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .confirmation-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .confirmation-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .confirmation-message {
+            color: var(--color-brown-light);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* Referral Card */
+        .referral-card {
+            background: linear-gradient(135deg, var(--color-yellow) 0%, var(--color-orange) 100%);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .referral-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--color-brown);
+        }
+
+        .referral-card p {
+            color: var(--color-brown);
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .referral-link-container {
+            background: var(--color-white);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .referral-link {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: var(--color-cream);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: var(--font-body);
+        }
+
+        .btn-copy {
+            background: var(--color-brown);
+            color: var(--color-cream);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-copy:hover {
+            transform: scale(1.05);
+        }
+
+        .referral-reward {
+            margin-top: 15px;
+            font-size: 13px;
+            color: var(--color-brown);
+        }
+
+        /* Error message */
+        .error-message {
+            background: #FFEBEE;
+            border: 1px solid var(--color-red);
+            color: var(--color-red);
+            padding: 12px 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            .cookie-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .cookie-item-image {
+                height: 100px;
+            }
+
+            .cookie-item-content {
+                padding: 10px;
+            }
+
+            .cookie-item-name {
+                font-size: 12px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .time-slots {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <img src="images/logo.png" alt="Ohlala Cookies" class="header-logo">
+            <span class="header-title">Ma Commande</span>
+        </div>
+        <a href="index.html" class="header-back">← Retour</a>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-step active" id="prog-1">1</div>
+            <div class="progress-line" id="line-1"></div>
+            <div class="progress-step inactive" id="prog-2">2</div>
+            <div class="progress-line" id="line-2"></div>
+            <div class="progress-step inactive" id="prog-3">3</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Step 1: Choose Cookies -->
+        <div class="step active" id="step-1">
+            <div class="card">
+                <h2 class="card-title">🍪 Choisissez vos cookies</h2>
+                
+                <!-- Tier Progress -->
+                <div class="tier-container">
+                    <div class="cookie-counter-display">
+                        <strong id="cookie-count-display">0</strong> cookie(s) sélectionné(s)
+                    </div>
+                    <div class="tier-progress-wrapper">
+                        <div class="tier-progress-bar">
+                            <div class="tier-progress-fill" id="tier-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="tier-markers">
+                            <div class="tier-marker" data-tier="4">
+                                <div class="tier-marker-dot">4</div>
+                                <div class="tier-marker-info">
+                                    <span class="tier-marker-price">12€</span>
+                                    <span class="tier-discount">-14%</span>
+                                </div>
+                            </div>
+                            <div class="tier-marker" data-tier="6">
+                                <div class="tier-marker-dot">6</div>
+                                <div class="tier-marker-info">
+                                    <span class="tier-marker-price">18€</span>
+                                    <span class="tier-discount">-14%</span>
+                                </div>
+                            </div>
+                            <div class="tier-marker" data-tier="8">
+                                <div class="tier-marker-dot">8</div>
+                                <div class="tier-marker-info">
+                                    <span class="tier-marker-price">23€</span>
+                                    <span class="tier-discount">-18%</span>
+                                </div>
+                            </div>
+                            <div class="tier-marker" data-tier="10">
+                                <div class="tier-marker-dot">10</div>
+                                <div class="tier-marker-info">
+                                    <span class="tier-marker-price">28€</span>
+                                    <span class="tier-discount">-20%</span>
+                                </div>
+                            </div>
+                            <div class="tier-marker" data-tier="20">
+                                <div class="tier-marker-dot">20</div>
+                                <div class="tier-marker-info">
+                                    <span class="tier-marker-price">🚚</span>
+                                    <span class="tier-discount">Gratuit</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Tier Banner -->
+                <div class="current-tier-banner" id="tier-banner" style="display: none;">
+                    <h4 id="tier-banner-title">🎉 Palier 4 cookies débloqué !</h4>
+                    <p id="tier-banner-text">Vous économisez 14% sur votre commande</p>
+                </div>
+
+                <!-- Next Tier Nudge -->
+                <div class="next-tier-nudge" id="next-tier-nudge">
+                    <span class="next-tier-nudge-text">Ajoutez <strong id="cookies-to-next">4</strong> cookie(s) pour débloquer <strong id="next-discount">-14%</strong></span>
+                </div>
+
+                <!-- Cookie Grid -->
+                <div class="cookie-grid" id="cookie-grid">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Delivery -->
+        <div class="step" id="step-2">
+            <div class="card">
+                <h2 class="card-title">🚚 Livraison ou Retrait</h2>
+                
+                <div class="delivery-options">
+                    <div class="delivery-option" onclick="selectDelivery('delivery')">
+                        <div class="delivery-option-radio"></div>
+                        <div class="delivery-option-content">
+                            <div class="delivery-option-title">
+                                🚚 Livraison à domicile
+                                <span class="delivery-option-price" id="delivery-price">5,00€</span>
+                            </div>
+                            <p class="delivery-option-desc">Tous les jours de 14h à 21h<br>Colombes, Bois-Colombes, La Garenne, Asnières, Courbevoie</p>
+                        </div>
+                    </div>
+
+                    <div class="delivery-option" onclick="selectDelivery('pickup')">
+                        <div class="delivery-option-radio"></div>
+                        <div class="delivery-option-content">
+                            <div class="delivery-option-title">
+                                📍 Retrait au marché
+                                <span class="delivery-option-price free">Gratuit</span>
+                            </div>
+                            <p class="delivery-option-desc">Marché de La Garenne-Colombes<br>Samedi de 8h à 13h</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delivery Address Form -->
+                <div class="address-form" id="delivery-form">
+                    <h3 style="margin-bottom: 15px; font-size: 16px;">📍 Adresse de livraison</h3>
+                    
+                    <div class="error-message" id="city-error">
+                        Désolé, nous ne livrons pas encore dans cette ville. Vous pouvez choisir le retrait au marché.
+                    </div>
+
+                    <div class="form-group">
+                        <label>Adresse</label>
+                        <input type="text" id="address" placeholder="Numéro et rue">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Code postal</label>
+                            <input type="text" id="postal-code" placeholder="92XXX" maxlength="5">
+                        </div>
+                        <div class="form-group">
+                            <label>Ville</label>
+                            <select id="city">
+                                <option value="">Sélectionnez</option>
+                                <option value="colombes">Colombes</option>
+                                <option value="bois-colombes">Bois-Colombes</option>
+                                <option value="la-garenne">La Garenne-Colombes</option>
+                                <option value="asnieres">Asnières-sur-Seine</option>
+                                <option value="courbevoie">Courbevoie</option>
+                                <option value="other">Autre ville</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Jour de livraison</label>
+                        <select id="delivery-day">
+                            <option value="">Sélectionnez un jour</option>
+                            <!-- Options générées par JS -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Créneau de livraison</label>
+                        <div class="time-slots" id="delivery-slots">
+                            <div class="time-slot" onclick="selectDeliverySlot(this, '14h-16h')">14h-16h</div>
+                            <div class="time-slot" onclick="selectDeliverySlot(this, '16h-18h')">16h-18h</div>
+                            <div class="time-slot" onclick="selectDeliverySlot(this, '18h-21h')">18h-21h</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pickup Form -->
+                <div class="address-form" id="pickup-form">
+                    <h3 style="margin-bottom: 15px; font-size: 16px;">🕐 Choisissez votre créneau</h3>
+                    <p style="font-size: 13px; color: var(--color-brown-light); margin-bottom: 15px;">
+                        Marché de La Garenne-Colombes - Samedi
+                    </p>
+                    <div class="time-slots" id="pickup-slots">
+                        <div class="time-slot" onclick="selectPickupSlot(this, '8h-9h')">8h-9h</div>
+                        <div class="time-slot" onclick="selectPickupSlot(this, '9h-10h')">9h-10h</div>
+                        <div class="time-slot" onclick="selectPickupSlot(this, '10h-11h')">10h-11h</div>
+                        <div class="time-slot" onclick="selectPickupSlot(this, '11h-12h')">11h-12h</div>
+                        <div class="time-slot" onclick="selectPickupSlot(this, '12h-13h')">12h-13h</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">👤 Vos coordonnées</h2>
+                <div class="form-group">
+                    <label>Prénom</label>
+                    <input type="text" id="firstname" placeholder="Votre prénom">
+                </div>
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <input type="tel" id="phone" placeholder="06 XX XX XX XX">
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" onclick="goToStep(1)">← Retour</button>
+        </div>
+
+        <!-- Step 3: Payment -->
+        <div class="step" id="step-3">
+            <div class="card">
+                <h2 class="card-title">📋 Récapitulatif</h2>
+                <div class="summary-card">
+                    <div id="summary-items">
+                        <!-- Generated by JS -->
+                    </div>
+                    <div class="summary-divider"></div>
+                    <div class="summary-item" id="summary-delivery-info">
+                        <span id="summary-delivery-label">Livraison</span>
+                        <span id="summary-delivery-details"></span>
+                    </div>
+                    <div class="summary-divider"></div>
+                    <div class="summary-item">
+                        <span>Sous-total cookies</span>
+                        <span id="summary-subtotal">0€</span>
+                    </div>
+                    <div class="summary-item" id="summary-delivery-row">
+                        <span>Frais de livraison</span>
+                        <span id="summary-delivery">0€</span>
+                    </div>
+                    <div class="summary-item" id="summary-savings-row" style="color: var(--color-green);">
+                        <span>Économies</span>
+                        <span id="summary-savings">-0€</span>
+                    </div>
+                    <div class="summary-divider"></div>
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <span id="summary-total">0€</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">🎁 Code parrain</h2>
+                <p style="font-size: 13px; color: var(--color-brown-light); margin-bottom: 15px;">
+                    Vous avez un code parrain ? Entrez-le pour bénéficier d'un cookie gratuit sur votre prochaine commande !
+                </p>
+                <div class="form-group">
+                    <input type="text" id="referral-code-input" placeholder="Code parrain (ex: marie1234)">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">💳 Mode de paiement</h2>
+                <div class="payment-options">
+                    <div class="payment-option" onclick="selectPayment('card')">
+                        <div class="payment-option-header">
+                            <span class="payment-option-icon">💳</span>
+                            <span class="payment-option-title">Payer maintenant</span>
+                        </div>
+                        <p class="payment-option-desc">Paiement sécurisé par carte bancaire via SumUp</p>
+                    </div>
+
+                    <div class="payment-option" onclick="selectPayment('later')">
+                        <div class="payment-option-header">
+                            <span class="payment-option-icon">🤝</span>
+                            <span class="payment-option-title">Payer à la réception</span>
+                        </div>
+                        <p class="payment-option-desc">Espèces ou CB à la livraison / au retrait</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" onclick="goToStep(2)">← Retour</button>
+        </div>
+
+        <!-- Confirmation -->
+        <div class="step" id="step-confirmation">
+            <div class="confirmation-container">
+                <div class="confirmation-icon">🎉</div>
+                <h2 class="confirmation-title" id="confirmation-title">Commande confirmée !</h2>
+                <p class="confirmation-message" id="confirmation-message">
+                    Merci pour votre commande ! Vous recevrez vos cookies très bientôt.
+                </p>
+
+                <div class="referral-card">
+                    <h3>🎁 Parrainez un ami</h3>
+                    <p>Partagez ce lien avec vos proches !</p>
+                    <div class="referral-link-container">
+                        <input type="text" class="referral-link" id="referral-link" readonly>
+                        <button class="btn-copy" onclick="copyReferralLink()">Copier</button>
+                    </div>
+                    <p class="referral-reward">🍪 1 cookie offert pour vous et votre filleul <strong>sur votre prochaine commande</strong></p>
+                </div>
+
+                <a href="index.html" class="btn btn-primary" style="margin-top: 30px;">Retour à l'accueil</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Summary Sticky -->
+    <div class="order-summary-sticky" id="order-summary">
+        <div class="order-summary-content">
+            <div class="order-summary-info">
+                <div class="order-summary-count" id="summary-count">0 cookie</div>
+                <div class="order-summary-price" id="summary-price">0€</div>
+                <div class="order-summary-savings" id="summary-savings-badge"></div>
+            </div>
+            <button class="btn btn-primary" id="btn-continue" onclick="continueOrder()" disabled>
+                Continuer →
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const WHATSAPP_NUMBER = '33667527165';
+        
+        // Pricing tiers
+        const TIERS = {
+            4: { price: 12, discount: 14 },
+            6: { price: 18, discount: 14 },
+            8: { price: 23, discount: 18 },
+            10: { price: 28, discount: 20 }
+        };
+
+        // Cookies data
+        const cookies = [
+            { id: 'chocolat-noir', name: 'Chocolat Noir', price: 3, image: 'images/chocolat-noir.png', badge: 'bestseller' },
+            { id: 'chocolat-lait', name: 'Chocolat au Lait', price: 3, image: 'images/chocolat-lait.png', badge: 'bestseller' },
+            { id: 'pistache', name: 'Chocolat Blanc & Pistache', price: 3.5, image: 'images/pistache.png' },
+            { id: 'cacahuete', name: 'Beurre de Cacahuète', price: 3.5, image: 'images/cacahuete.png' },
+            { id: 'speculoos', name: 'Chocolat Noir & Speculoos', price: 3.5, image: 'images/speculoos.png' },
+            { id: 'nocciolata', name: 'Chocolat Noir & Nocciolata', price: 3.5, image: 'images/nocciolata.png' },
+            { id: 'chocolat-blanc', name: 'Chocolat Blanc & Macadamia', price: 3.5, image: 'images/chocolat-blanc.png' },
+            { id: 'dulcey', name: 'Chocolat Dulcey & Pécan', price: 3.5, image: 'images/dulcey.png' },
+            { id: 'miso', name: 'Caramélia & Pâte au Miso', price: 3.5, image: 'images/miso.png', badge: 'new' }
+        ];
+
+        // State
+        let cart = {};
+        let deliveryMethod = null;
+        let deliveryDay = null;
+        let deliverySlot = null;
+        let pickupSlot = null;
+        let paymentMethod = null;
+        let currentStep = 1;
+
+        // Initialize
+        function init() {
+            renderCookieGrid();
+            generateDeliveryDays();
+            updateDisplay();
+            checkReferral();
+        }
+
+        // Generate delivery days (next 7 days)
+        function generateDeliveryDays() {
+            const select = document.getElementById('delivery-day');
+            const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+            const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+            
+            const today = new Date();
+            
+            for (let i = 1; i <= 7; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                
+                const dayName = days[date.getDay()];
+                const dayNum = date.getDate();
+                const monthName = months[date.getMonth()];
+                
+                const option = document.createElement('option');
+                option.value = `${dayName} ${dayNum} ${monthName}`;
+                option.textContent = `${dayName} ${dayNum} ${monthName}`;
+                select.appendChild(option);
+            }
+        }
+
+        // Get next Saturday date
+        function getNextSaturday() {
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const daysUntilSaturday = (6 - dayOfWeek + 7) % 7 || 7;
+            const nextSaturday = new Date(today);
+            nextSaturday.setDate(today.getDate() + daysUntilSaturday);
+            
+            const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+            return `${nextSaturday.getDate()} ${months[nextSaturday.getMonth()]}`;
+        }
+
+        // Render cookie grid
+        function renderCookieGrid() {
+            const grid = document.getElementById('cookie-grid');
+            grid.innerHTML = cookies.map(cookie => `
+                <div class="cookie-item" id="item-${cookie.id}">
+                    <div class="cookie-item-image-wrapper">
+                        <img src="${cookie.image}" alt="${cookie.name}" class="cookie-item-image">
+                        ${cookie.badge ? `<span class="cookie-card-badge ${cookie.badge}">${cookie.badge === 'bestseller' ? 'Best seller' : 'Création'}</span>` : ''}
+                    </div>
+                    <div class="cookie-item-content">
+                        <h3 class="cookie-item-name">${cookie.name}</h3>
+                        <div class="cookie-item-price">
+                            <span class="current-price">${cookie.price.toFixed(2).replace('.', ',')}€</span>
+                        </div>
+                        <div class="quantity-control">
+                            <button class="qty-btn minus" onclick="updateCart('${cookie.id}', -1)">−</button>
+                            <span class="qty-value" id="qty-${cookie.id}">0</span>
+                            <button class="qty-btn plus" onclick="updateCart('${cookie.id}', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update cart
+        function updateCart(cookieId, delta) {
+            if (!cart[cookieId]) cart[cookieId] = 0;
+            cart[cookieId] = Math.max(0, cart[cookieId] + delta);
+            if (cart[cookieId] === 0) delete cart[cookieId];
+            
+            document.getElementById(`qty-${cookieId}`).textContent = cart[cookieId] || 0;
+            document.getElementById(`item-${cookieId}`).classList.toggle('has-quantity', cart[cookieId] > 0);
+            
+            updateDisplay();
+        }
+
+        // Calculate totals
+        function calculateTotals() {
+            const totalCookies = Object.values(cart).reduce((a, b) => a + b, 0);
+            
+            // Calculate regular price
+            let regularPrice = 0;
+            Object.entries(cart).forEach(([id, qty]) => {
+                const cookie = cookies.find(c => c.id === id);
+                regularPrice += cookie.price * qty;
+            });
+
+            // Find applicable tier
+            let tierPrice = regularPrice;
+            let currentTier = null;
+            let savings = 0;
+
+            const tierKeys = Object.keys(TIERS).map(Number).sort((a, b) => b - a);
+            for (const tier of tierKeys) {
+                if (totalCookies >= tier) {
+                    currentTier = tier;
+                    // Calculate tier price: box price + extras
+                    const extraCookies = totalCookies - tier;
+                    tierPrice = TIERS[tier].price;
+                    
+                    if (extraCookies > 0) {
+                        // Add price for extra cookies at regular rate
+                        let extraPrice = 0;
+                        let cookieList = [];
+                        Object.entries(cart).forEach(([id, qty]) => {
+                            const cookie = cookies.find(c => c.id === id);
+                            for (let i = 0; i < qty; i++) {
+                                cookieList.push(cookie.price);
+                            }
+                        });
+                        cookieList.sort((a, b) => b - a);
+                        for (let i = tier; i < cookieList.length; i++) {
+                            extraPrice += cookieList[i];
+                        }
+                        tierPrice += extraPrice;
+                    }
+                    
+                    savings = regularPrice - tierPrice;
+                    break;
+                }
+            }
+
+            return { totalCookies, regularPrice, tierPrice, currentTier, savings };
+        }
+
+        // Update display
+        function updateDisplay() {
+            const { totalCookies, regularPrice, tierPrice, currentTier, savings } = calculateTotals();
+
+            // Update summary
+            document.getElementById('summary-count').textContent = `${totalCookies} cookie${totalCookies > 1 ? 's' : ''}`;
+            document.getElementById('summary-price').textContent = `${tierPrice.toFixed(2).replace('.', ',')}€`;
+            
+            // Update cookie counter display
+            document.getElementById('cookie-count-display').textContent = totalCookies;
+            
+            const savingsBadge = document.getElementById('summary-savings-badge');
+            if (savings > 0) {
+                savingsBadge.textContent = `Vous économisez ${savings.toFixed(2).replace('.', ',')}€`;
+            } else {
+                savingsBadge.textContent = '';
+            }
+
+            // Update tier progress - proportional to markers
+            // Markers are at 4, 6, 8, 10, 20 which represent 20%, 40%, 60%, 80%, 100% of the bar
+            let progress = 0;
+            if (totalCookies <= 0) {
+                progress = 0;
+            } else if (totalCookies <= 4) {
+                // 0-4 cookies maps to 0-20%
+                progress = (totalCookies / 4) * 20;
+            } else if (totalCookies <= 6) {
+                // 4-6 cookies maps to 20-40%
+                progress = 20 + ((totalCookies - 4) / 2) * 20;
+            } else if (totalCookies <= 8) {
+                // 6-8 cookies maps to 40-60%
+                progress = 40 + ((totalCookies - 6) / 2) * 20;
+            } else if (totalCookies <= 10) {
+                // 8-10 cookies maps to 60-80%
+                progress = 60 + ((totalCookies - 8) / 2) * 20;
+            } else if (totalCookies <= 20) {
+                // 10-20 cookies maps to 80-100%
+                progress = 80 + ((totalCookies - 10) / 10) * 20;
+            } else {
+                progress = 100;
+            }
+            document.getElementById('tier-fill').style.width = `${progress}%`;
+
+            // Update tier markers
+            document.querySelectorAll('.tier-marker').forEach(marker => {
+                const tier = parseInt(marker.dataset.tier);
+                marker.classList.remove('unlocked', 'current');
+                if (totalCookies >= tier) {
+                    marker.classList.add('unlocked');
+                }
+                if (currentTier === tier) {
+                    marker.classList.add('current');
+                }
+            });
+
+            // Update tier banner
+            const tierBanner = document.getElementById('tier-banner');
+            if (currentTier) {
+                tierBanner.style.display = 'block';
+                document.getElementById('tier-banner-title').textContent = `🎉 Palier ${currentTier} cookies débloqué !`;
+                document.getElementById('tier-banner-text').textContent = `Vous économisez ${TIERS[currentTier].discount}% sur votre commande`;
+            } else {
+                tierBanner.style.display = 'none';
+            }
+
+            // Update next tier nudge
+            const nextTierNudge = document.getElementById('next-tier-nudge');
+            const tierKeys = Object.keys(TIERS).map(Number).sort((a, b) => a - b);
+            const nextTier = tierKeys.find(t => t > totalCookies);
+            
+            if (nextTier && totalCookies > 0) {
+                nextTierNudge.classList.remove('hidden');
+                document.getElementById('cookies-to-next').textContent = nextTier - totalCookies;
+                document.getElementById('next-discount').textContent = `-${TIERS[nextTier].discount}%`;
+            } else {
+                nextTierNudge.classList.add('hidden');
+            }
+
+            // Enable/disable continue button
+            document.getElementById('btn-continue').disabled = totalCookies === 0;
+        }
+
+        // Continue order
+        function continueOrder() {
+            if (currentStep === 1) {
+                goToStep(2);
+            } else if (currentStep === 2) {
+                if (validateStep2()) {
+                    goToStep(3);
+                }
+            } else if (currentStep === 3) {
+                if (validateStep3()) {
+                    submitOrder();
+                }
+            }
+        }
+
+        // Go to step
+        function goToStep(step) {
+            currentStep = step;
+            
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step-${step}`).classList.add('active');
+
+            // Update progress
+            for (let i = 1; i <= 3; i++) {
+                const progStep = document.getElementById(`prog-${i}`);
+                const progLine = document.getElementById(`line-${i}`);
+                
+                progStep.classList.remove('active', 'completed', 'inactive');
+                if (i < step) {
+                    progStep.classList.add('completed');
+                    if (progLine) progLine.classList.add('completed');
+                } else if (i === step) {
+                    progStep.classList.add('active');
+                } else {
+                    progStep.classList.add('inactive');
+                    if (progLine) progLine.classList.remove('completed');
+                }
+            }
+
+            // Update button text
+            const btn = document.getElementById('btn-continue');
+            if (step === 1) {
+                btn.textContent = 'Continuer →';
+                btn.disabled = Object.keys(cart).length === 0;
+            } else if (step === 2) {
+                btn.textContent = 'Continuer →';
+                btn.disabled = false;
+            } else if (step === 3) {
+                btn.textContent = 'Confirmer la commande';
+                btn.disabled = !paymentMethod;
+                updateSummary();
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Select delivery method
+        function selectDelivery(method) {
+            deliveryMethod = method;
+            
+            document.querySelectorAll('.delivery-option').forEach(opt => opt.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+
+            document.getElementById('delivery-form').classList.toggle('visible', method === 'delivery');
+            document.getElementById('pickup-form').classList.toggle('visible', method === 'pickup');
+
+            updateDeliveryPrice();
+        }
+
+        // Update delivery price
+        function updateDeliveryPrice() {
+            const { totalCookies } = calculateTotals();
+            const isFree = totalCookies >= 20;
+            const priceEl = document.getElementById('delivery-price');
+            
+            if (isFree) {
+                priceEl.textContent = 'Gratuit';
+                priceEl.classList.add('free');
+            } else {
+                priceEl.textContent = '5,00€';
+                priceEl.classList.remove('free');
+            }
+        }
+
+        // Select delivery slot
+        function selectDeliverySlot(el, slot) {
+            deliverySlot = slot;
+            document.querySelectorAll('#delivery-slots .time-slot').forEach(s => s.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        // Select pickup slot
+        function selectPickupSlot(el, slot) {
+            pickupSlot = slot;
+            document.querySelectorAll('#pickup-slots .time-slot').forEach(s => s.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        // City validation
+        document.getElementById('city')?.addEventListener('change', function() {
+            const errorEl = document.getElementById('city-error');
+            if (this.value === 'other') {
+                errorEl.classList.add('visible');
+            } else {
+                errorEl.classList.remove('visible');
+            }
+        });
+
+        // Validate step 2
+        function validateStep2() {
+            if (!deliveryMethod) {
+                alert('Veuillez choisir un mode de livraison');
+                return false;
+            }
+
+            const firstname = document.getElementById('firstname').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+
+            if (!firstname) {
+                alert('Veuillez entrer votre prénom');
+                return false;
+            }
+            if (!phone) {
+                alert('Veuillez entrer votre numéro de téléphone');
+                return false;
+            }
+
+            if (deliveryMethod === 'delivery') {
+                const address = document.getElementById('address').value.trim();
+                const city = document.getElementById('city').value;
+                deliveryDay = document.getElementById('delivery-day').value;
+                
+                if (!address) {
+                    alert('Veuillez entrer votre adresse');
+                    return false;
+                }
+                if (!city || city === 'other') {
+                    alert('Veuillez sélectionner une ville éligible');
+                    return false;
+                }
+                if (!deliveryDay) {
+                    alert('Veuillez choisir un jour de livraison');
+                    return false;
+                }
+                if (!deliverySlot) {
+                    alert('Veuillez choisir un créneau de livraison');
+                    return false;
+                }
+            } else {
+                if (!pickupSlot) {
+                    alert('Veuillez choisir un créneau de retrait');
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        // Select payment
+        function selectPayment(method) {
+            paymentMethod = method;
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            document.getElementById('btn-continue').disabled = false;
+        }
+
+        // Validate step 3
+        function validateStep3() {
+            if (!paymentMethod) {
+                alert('Veuillez choisir un mode de paiement');
+                return false;
+            }
+            return true;
+        }
+
+        // Update summary
+        function updateSummary() {
+            const { totalCookies, regularPrice, tierPrice, currentTier, savings } = calculateTotals();
+            
+            // Items
+            let itemsHtml = '';
+            Object.entries(cart).forEach(([id, qty]) => {
+                const cookie = cookies.find(c => c.id === id);
+                itemsHtml += `<div class="summary-item indent">
+                    <span>${qty}x ${cookie.name}</span>
+                </div>`;
+            });
+            document.getElementById('summary-items').innerHTML = itemsHtml;
+
+            // Delivery info
+            const deliveryLabel = document.getElementById('summary-delivery-label');
+            const deliveryDetails = document.getElementById('summary-delivery-details');
+            
+            if (deliveryMethod === 'delivery') {
+                const city = document.getElementById('city').options[document.getElementById('city').selectedIndex].text;
+                deliveryLabel.textContent = '🚚 Livraison à domicile';
+                deliveryDetails.textContent = `${deliveryDay} - ${deliverySlot}`;
+            } else {
+                deliveryLabel.textContent = '📍 Retrait au marché';
+                deliveryDetails.textContent = `Samedi ${getNextSaturday()} - ${pickupSlot}`;
+            }
+
+            // Subtotal
+            document.getElementById('summary-subtotal').textContent = `${tierPrice.toFixed(2).replace('.', ',')}€`;
+
+            // Delivery cost
+            let deliveryCost = 0;
+            if (deliveryMethod === 'delivery' && totalCookies < 20) {
+                deliveryCost = 5;
+                document.getElementById('summary-delivery-row').style.display = 'flex';
+            } else {
+                document.getElementById('summary-delivery-row').style.display = deliveryMethod === 'delivery' ? 'flex' : 'none';
+            }
+            document.getElementById('summary-delivery').textContent = deliveryCost === 0 ? 'Gratuit' : `${deliveryCost.toFixed(2).replace('.', ',')}€`;
+
+            // Savings
+            if (savings > 0) {
+                document.getElementById('summary-savings-row').style.display = 'flex';
+                document.getElementById('summary-savings').textContent = `-${savings.toFixed(2).replace('.', ',')}€`;
+            } else {
+                document.getElementById('summary-savings-row').style.display = 'none';
+            }
+
+            // Total
+            const total = tierPrice + deliveryCost;
+            document.getElementById('summary-total').textContent = `${total.toFixed(2).replace('.', ',')}€`;
+        }
+
+        // Submit order
+        function submitOrder() {
+            const { totalCookies, tierPrice } = calculateTotals();
+            const firstname = document.getElementById('firstname').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const referralCode = document.getElementById('referral-code-input').value.trim();
+
+            let deliveryCost = 0;
+            if (deliveryMethod === 'delivery' && totalCookies < 20) {
+                deliveryCost = 5;
+            }
+            const total = tierPrice + deliveryCost;
+
+            // Build order data to send via WhatsApp (in background)
+            const orderData = buildOrderMessage(firstname, phone, total, referralCode);
+            
+            // Open WhatsApp in background/new tab to send order
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(orderData)}`;
+            window.open(whatsappUrl, '_blank');
+
+            // Show confirmation page immediately (no redirect)
+            showConfirmation(firstname);
+        }
+
+        // Build order message for WhatsApp
+        function buildOrderMessage(firstname, phone, total, referralCode) {
+            let message = `🍪 *Nouvelle commande Ohlala Cookies*\n\n`;
+            message += `👤 *${firstname}*\n📞 ${phone}\n`;
+            
+            if (referralCode) {
+                message += `🎁 Code parrain: ${referralCode}\n`;
+            }
+            
+            message += `\n📦 *Commande :*\n`;
+            
+            Object.entries(cart).forEach(([id, qty]) => {
+                const cookie = cookies.find(c => c.id === id);
+                message += `   • ${qty}x ${cookie.name}\n`;
+            });
+
+            message += `\n`;
+
+            if (deliveryMethod === 'delivery') {
+                const address = document.getElementById('address').value;
+                const city = document.getElementById('city').options[document.getElementById('city').selectedIndex].text;
+                message += `🚚 *Livraison :*\n`;
+                message += `   ${address}\n`;
+                message += `   ${city}\n`;
+                message += `   📅 ${deliveryDay}\n`;
+                message += `   🕐 ${deliverySlot}\n`;
+            } else {
+                message += `📍 *Retrait au marché :*\n`;
+                message += `   Samedi ${getNextSaturday()}\n`;
+                message += `   🕐 ${pickupSlot}\n`;
+            }
+
+            message += `\n💶 *Total : ${total.toFixed(2).replace('.', ',')}€*`;
+            message += `\n💳 *Paiement : ${paymentMethod === 'later' ? 'À la réception' : 'Carte bancaire'}*`;
+
+            return message;
+        }
+
+        // Send WhatsApp order
+        // Show confirmation
+        function showConfirmation(firstname) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step-confirmation').classList.add('active');
+            document.getElementById('order-summary').style.display = 'none';
+
+            // Generate referral link
+            const referralCode = firstname.toLowerCase().replace(/\s/g, '') + Math.random().toString(36).substr(2, 4);
+            const referralLink = `${window.location.origin}/commander.html?ref=${referralCode}`;
+            document.getElementById('referral-link').value = referralLink;
+
+            // Update confirmation message based on delivery method
+            const confirmTitle = document.getElementById('confirmation-title');
+            const confirmMessage = document.getElementById('confirmation-message');
+            
+            if (deliveryMethod === 'delivery') {
+                confirmTitle.textContent = '🍪 Votre commande est confirmée !';
+                confirmMessage.innerHTML = `
+                    <strong>Merci ${firstname} !</strong><br><br>
+                    Nous préparons votre commande avec beaucoup d'amour 💛<br><br>
+                    Nous reviendrons vers vous très rapidement pour confirmer la livraison du <strong>${deliveryDay}</strong> entre <strong>${deliverySlot}</strong>.
+                `;
+            } else {
+                confirmTitle.textContent = '🍪 Votre commande est confirmée !';
+                confirmMessage.innerHTML = `
+                    <strong>Merci ${firstname} !</strong><br><br>
+                    Nous préparons vos cookies avec beaucoup d'amour 💛<br><br>
+                    Rendez-vous <strong>samedi ${getNextSaturday()}</strong> entre <strong>${pickupSlot}</strong><br>
+                    au marché de La Garenne-Colombes !
+                `;
+            }
+        }
+
+        // Copy referral link
+        function copyReferralLink() {
+            const link = document.getElementById('referral-link');
+            link.select();
+            document.execCommand('copy');
+            
+            const btn = document.querySelector('.btn-copy');
+            btn.textContent = 'Copié !';
+            setTimeout(() => btn.textContent = 'Copier', 2000);
+        }
+
+        // Check for referral
+        function checkReferral() {
+            const params = new URLSearchParams(window.location.search);
+            const ref = params.get('ref');
+            
+            if (ref) {
+                // Pre-fill the referral code input
+                document.getElementById('referral-code-input').value = ref;
+                localStorage.setItem('referralCode', ref);
+            }
+        }
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>
